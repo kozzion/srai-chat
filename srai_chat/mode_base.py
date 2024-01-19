@@ -8,15 +8,18 @@ from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
 
 from srai_chat.command_base import CommandBase
+from srai_chat.service.service_chat_telegram import ServiceChatTelegram
 
 
 class ModeBase(ABC):
-    def __init__(self) -> None:
+    def __init__(
+        self,
+    ) -> None:
         self.skill_name = self.__class__.__name__
 
-        from srai_chat.service.service_telegram_bot import ServiceTelegramBot  # avoiding circular import
+        from srai_chat.service.context_manager import ContextManager  # avoiding circular import
 
-        self.service_telegram_bot: ServiceTelegramBot = service_telegram_bot.get_instance()
+        self.service_chat: ServiceChatTelegram = ContextManager.get_instance().service_chat
         self.command_dict = {}
 
         connection_string = os.environ["MONGODB_CONNECTION_STRING"]

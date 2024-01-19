@@ -7,23 +7,10 @@ from telegram.ext import CallbackContext, CommandHandler, Updater
 
 from srai_chat.command_base import CommandBase
 from srai_chat.dao.dao_chat_message import ChatMessage
-from srai_chat.service.service_persistency import ServicePersistency
 from srai_chat.skill_base import SkillBase
 
 
-class ServiceTelegramBot(ABC):
-    _instance: "ServicePersistency" = None  # type: ignore
-
-    @staticmethod
-    def get_instance() -> "ServicePersistency":
-        if ServicePersistency._instance is None:
-            raise Exception("ServiceSceduling not initialized")
-        return ServicePersistency._instance
-
-    @staticmethod
-    def initialize(connection_string: str, database_name: str) -> None:
-        ServicePersistency._instance = ServicePersistency(connection_string, database_name)
-
+class ServiceChatTelegram(ABC):
     def __init__(
         self,
         bot_token: str,
@@ -57,7 +44,11 @@ class ServiceTelegramBot(ABC):
         author_name = update.message.from_user.username
         message_content = {"message_content_type": "text", "text": update.message.text}
         message = ChatMessage(message_id, chat_id, author_id, author_name, message_content)
-        ServicePersistency.get_instance().dao_message.save_message(message)
+
+        from srai_chat.service.context_manager import ContextManager  # TODO
+
+        service_persistency = ContextManager.get_instance().service_persistency
+        service_persistency.dao_message.save_message(message)
 
         # TODO move this to a skill or mode
 
@@ -72,6 +63,7 @@ class ServiceTelegramBot(ABC):
         self.updater.bot.send_message(chat_id=chat_id, text=text)
         message_id = str(uuid4())
         message_content = {"message_content_type": "text", "text": text}
-        ServicePersistency.get_instance().dao_message.save_message(
-            ChatMessage(message_id, str(chat_id), "0", "bot", message_content)
-        )
+        from srai_chat.service.context_manager import ContextManager  # TODO
+
+        service_persistency = ContextManager.get_instance().service_persistency
+        service_persistency.dao_message.save_message(ChatMessage(message_id, str(chat_id), "0", "bot", message_content))

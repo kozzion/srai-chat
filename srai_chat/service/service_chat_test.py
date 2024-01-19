@@ -1,7 +1,7 @@
 from typing import List
 
 from srai_chat.dao.dao_chat_message import ChatMessage, DaoChatMessage
-from srai_chat.service.service_telegram_bot import ServiceTelegramBot
+from srai_chat.service.service_chat_telegram import ServiceChatTelegram
 
 
 class DaoMessageTest(DaoChatMessage):
@@ -18,7 +18,7 @@ class DaoMessageTest(DaoChatMessage):
         return list(self.dict_message.values())
 
 
-class ServiceChatTest(ServiceTelegramBot):
+class ServiceChatTest(ServiceChatTelegram):
     def __init__(self):
         super().__init__("", 0)
 

@@ -9,7 +9,7 @@ from typing import List
 from pymongo import MongoClient
 from pymongo.server_api import ServerApi
 
-from srai_chat.service.service_telegram_bot import ServiceTelegramBot
+from srai_chat.service.service_chat_telegram import ServiceTelegramBot
 
 
 class SceduleItem:
@@ -60,20 +60,7 @@ class SceduleItem:
 
 
 class ServiceSceduling:
-    _instance: "ServiceSceduling" = None  # type: ignore
-
-    @staticmethod
-    def get_instance() -> "ServiceSceduling":
-        if ServiceSceduling._instance is None:
-            raise Exception("ServiceSceduling not initialized")
-        return ServiceSceduling._instance
-
-    @staticmethod
-    def initialize(bot: ServiceTelegramBot) -> None:
-        ServiceSceduling._instance = ServiceSceduling(bot)
-
-    def __init__(self, bot: ServiceTelegramBot):
-        self.bot = bot
+    def __init__(self):
         self.thread = Thread(target=self.run, args=())
         self.is_running = False
         self.list_scedule_item: List[SceduleItem] = []
@@ -116,13 +103,16 @@ class ServiceSceduling:
         # self.bot.message_root("check_scedule ")
         current_scedule_check = int(time.time())
         list_scedule_item_new = []
+        from srai_chat.service.context_manager import ContextManager
+
+        service_chat = ContextManager.get_instance().service_chat
         for scedule_item in self.list_scedule_item:
             if (
                 self.last_scedule_check <= scedule_item.sceduled_time
                 and scedule_item.sceduled_time < current_scedule_check
             ):
-                self.bot.message_chat(scedule_item.chat_id, scedule_item.message)
-                command_support = self.bot.dict_command["getsupport"]
+                service_chat.message_chat(scedule_item.chat_id, scedule_item.message)
+                command_support = service_chat.dict_command["getsupport"]
                 command_support.execute_command(scedule_item.chat_id, "getsupport")
 
                 if scedule_item.repeat_type == "once":

@@ -36,11 +36,10 @@ class PromptConfig:
     def create(
         model: str,
         system_message_content: str,
-        user_message_content: str,
     ) -> "PromptConfig":
         list_message = []
         list_message.append({"role": "system", "content": system_message_content})
-        list_message.append({"role": "user", "content": user_message_content})
+
         return PromptConfig(model, list_message)
 
     @staticmethod
@@ -61,7 +60,7 @@ class DaoPromptConfig(DaoMongoBase):
     def save_prompt_config(self, id: str, prompt_config_result: PromptConfig) -> None:
         prompt_config_result_dict = prompt_config_result.to_dict()
         prompt_config_result_dict["_id"] = id
-        self.insert_one(prompt_config_result_dict)
+        self.update_one({"_id": id}, {"$set": prompt_config_result_dict}, upsert=True)
 
     def load_prompt_config_cached(self, prompt_config_input: PromptConfig) -> Optional[PromptConfig]:
         id = sha256(json.dumps(prompt_config_input.to_dict()).encode("utf-8")).hexdigest()

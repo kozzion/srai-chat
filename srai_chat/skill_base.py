@@ -7,16 +7,16 @@ from typing import Callable
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
 
-from srai_chat.skill.command_base import CommandBase
+from srai_chat.command_base import CommandBase
 
 
 class SkillBase(ABC):
     def __init__(self, service_telegram_bot) -> None:
         self.skill_name = self.__class__.__name__
 
-        from srai_chat.service_telegram_bot import ServiceTelegramBot  # avoiding circular import
+        from srai_chat.service.service_chat_telegram import ServiceChatTelegram  # avoiding circular import
 
-        self.service_telegram_bot: ServiceTelegramBot = service_telegram_bot
+        self.service_chat: ServiceChatTelegram = service_telegram_bot
         self.command_dict = {}
 
         connection_string = os.environ["MONGODB_CONNECTION_STRING"]

@@ -25,3 +25,5 @@ class DaoMongoBase:
 
     def update_one(self, query: dict, update: dict, upsert=False) -> None:
         self.collection.update_one(query, update, upsert)
+        # example:
+        {"$set": {"scedule_state": scedule_state}
