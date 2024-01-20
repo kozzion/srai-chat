@@ -2,15 +2,19 @@
 A chat library frontend for srai services.
 
 ## installation
+```
 pip install srai-chat
+```
 
 ## environment
 requires the following environment variables set \
-"TELEGRAM_ROOT_ID": "" \
-"TELEGRAM_TOKEN": "" \
-"OPENAI_API_KEY": "" \
-"MONGODB_CONNECTION_STRING": ""\
+```
+"TELEGRAM_ROOT_ID": ""
+"TELEGRAM_TOKEN": ""
+"OPENAI_API_KEY": ""
+"MONGODB_CONNECTION_STRING": "
 "MONGODB_DATABASE_NAME": ""
+```
 
 ## usage example
 ```
