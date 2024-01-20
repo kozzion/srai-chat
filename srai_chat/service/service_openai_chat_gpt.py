@@ -3,10 +3,12 @@ from typing import Optional, Tuple
 from openai import OpenAI
 
 from srai_chat.dao.dao_prompt_config import PromptConfig
+from srai_chat.service.context_manager import ContextManager
+from srai_chat.service.service_base import ServiceBase
 
 
-class ServiceOpenaiChatGpt:
-    def __init__(self, openai_api_key: str):
+class ServiceOpenaiChatGpt(ServiceBase):
+    def __init__(self, context_manager: ContextManager, openai_api_key: str):
         if openai_api_key is None:
             raise Exception("api_key_open_ai not set")
 

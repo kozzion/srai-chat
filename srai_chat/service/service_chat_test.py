@@ -1,7 +1,8 @@
 from typing import List
 
 from srai_chat.dao.dao_chat_message import ChatMessage, DaoChatMessage
-from srai_chat.service.service_chat_telegram import ServiceChatTelegram
+from srai_chat.service.context_manager import ContextManager
+from srai_chat.service.service_chat_base import ServiceChatBase
 
 
 class DaoMessageTest(DaoChatMessage):
@@ -18,9 +19,9 @@ class DaoMessageTest(DaoChatMessage):
         return list(self.dict_message.values())
 
 
-class ServiceChatTest(ServiceChatTelegram):
-    def __init__(self):
-        super().__init__("", 0)
+class ServiceChatTest(ServiceChatBase):
+    def __init__(self, context: ContextManager):
+        super().__init__(context, "0")
 
     def message_chat(self, chat_id: int, text: str):
         print(text)

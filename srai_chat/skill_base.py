@@ -11,12 +11,8 @@ from srai_chat.command_base import CommandBase
 
 
 class SkillBase(ABC):
-    def __init__(self, service_telegram_bot) -> None:
+    def __init__(self) -> None:
         self.skill_name = self.__class__.__name__
-
-        from srai_chat.service.service_chat_telegram import ServiceChatTelegram  # avoiding circular import
-
-        self.service_chat: ServiceChatTelegram = service_telegram_bot
         self.command_dict = {}
 
         connection_string = os.environ["MONGODB_CONNECTION_STRING"]

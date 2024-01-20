@@ -9,7 +9,8 @@ from typing import List
 from pymongo import MongoClient
 from pymongo.server_api import ServerApi
 
-from srai_chat.service.service_chat_telegram import ServiceTelegramBot
+from srai_chat.service.context_manager import ContextManager
+from srai_chat.service.service_base import ServiceBase
 
 
 class SceduleItem:
@@ -59,8 +60,9 @@ class SceduleItem:
         }
 
 
-class ServiceSceduling:
-    def __init__(self):
+class ServiceSceduling(ServiceBase):
+    def __init__(self, context: ContextManager):
+        super().__init__(context)
         self.thread = Thread(target=self.run, args=())
         self.is_running = False
         self.list_scedule_item: List[SceduleItem] = []
@@ -72,6 +74,13 @@ class ServiceSceduling:
         self.client = MongoClient(connection_string, server_api=ServerApi("1"))
         self.db = self.client.get_database(database_name)
         self.collection = self.db.get_collection("scedule_state")
+
+    def initialize(self):
+        super().initialize()
+
+    def start(self):
+        super().start()
+        self.thread.start()
 
     def load_scedule_state(self) -> dict:
         key = "base_scedule_state"
@@ -93,9 +102,6 @@ class ServiceSceduling:
         else:
             self.collection.update_one({"_id": key_hash}, {"$set": {"scedule_state": scedule_state}})
 
-    def start(self):
-        self.thread.start()
-
     def complete_task(self):
         pass
 
@@ -111,7 +117,7 @@ class ServiceSceduling:
                 self.last_scedule_check <= scedule_item.sceduled_time
                 and scedule_item.sceduled_time < current_scedule_check
             ):
-                service_chat.message_chat(scedule_item.chat_id, scedule_item.message)
+                service_chat.message_chat(str(scedule_item.chat_id), scedule_item.message)
                 command_support = service_chat.dict_command["getsupport"]
                 command_support.execute_command(scedule_item.chat_id, "getsupport")
 
