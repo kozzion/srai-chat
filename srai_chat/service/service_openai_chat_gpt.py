@@ -9,6 +9,7 @@ from srai_chat.service.service_base import ServiceBase
 
 class ServiceOpenaiChatGpt(ServiceBase):
     def __init__(self, context_manager: ContextManager, openai_api_key: str):
+        super().__init__(context_manager)
         if openai_api_key is None:
             raise Exception("api_key_open_ai not set")
 
