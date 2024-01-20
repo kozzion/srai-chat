@@ -2,6 +2,7 @@ import os
 
 from srai_chat.skill.mode_chat_gpt import ModeChatGpt
 from srai_chat.skill.skill_image_tag import SkillImageTag
+from srai_chat.skill.skill_mode_tools import SkillModeTools
 
 
 def initialize_default() -> "ContextManager":
@@ -32,6 +33,7 @@ if __name__ == "__main__":
     # ServiceSceduling.initialize(bot)
     context_manager.initialize()
     context_manager.service_chat.register_skill(SkillImageTag())
+    context_manager.service_chat.register_skill(SkillModeTools())
     context_manager.service_chat.register_mode(ModeChatGpt())
     context_manager.service_chat.mode_default = context_manager.service_chat.dict_mode["ModeChatGpt"]
 

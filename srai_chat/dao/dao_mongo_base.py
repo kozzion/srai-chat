@@ -10,6 +10,10 @@ class DaoMongoBase:
         self.db = self.client.get_database(database_name)
         self.collection = self.db.get_collection(collection_name)
 
+    def delete_all(self) -> int:
+        delete_result = self.collection.delete_many({})
+        return delete_result.deleted_count
+
     def count(self) -> int:
         return self.collection.count_documents({})
 

@@ -3,6 +3,7 @@ from hashlib import sha256
 from typing import Dict, List, Optional
 
 from srai_chat.dao.dao_mongo_base import DaoMongoBase
+from srai_chat.service.context_manager import ContextManager
 
 
 class PromptConfig:

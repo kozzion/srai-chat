@@ -10,14 +10,18 @@ class ModeChatGpt(ModeBase):
         self,
         chat_id: str,
     ) -> PromptConfig:
+        if chat_id is None:
+            raise Exception("chat_id is None")
         from srai_chat.service.context_manager import ContextManager
 
-        service_persistency = ContextManager.get_instance().service_persistency
+        context = ContextManager.get_instance()
+        service_persistency = context.service_persistency
         dao = service_persistency.dao_prompt_config
 
-        promt_config_input = PromptConfig.create("gpt-4", "You are a helpfull assistent")
-        dao.save_prompt_config(chat_id, promt_config_input)
-        return promt_config_input
+        prompt_config_input = PromptConfig.create("gpt-4", "You are a helpfull assistent")
+        dao.save_prompt_config(chat_id, prompt_config_input)
+        context.service_chat.message_chat(chat_id, f"Reset chat history for {chat_id}")
+        return prompt_config_input
 
     def process_message(
         self,
@@ -30,15 +34,16 @@ class ModeChatGpt(ModeBase):
             raise Exception("message_text is None")
         from srai_chat.service.context_manager import ContextManager
 
-        service_persistency = ContextManager.get_instance().service_persistency
-        service_openai_chat_gpt = ContextManager.get_instance().service_openai_chat_gpt
+        context = ContextManager.get_instance()
+        service_persistency = context.service_persistency
+
         dao = service_persistency.dao_prompt_config
 
-        promt_config_input = dao.load_prompt_config(chat_id)
-        if promt_config_input is None:
-            promt_config_input = self.reset(chat_id)
-        promt_config_input = promt_config_input.append_user_message(message_text)
-        promt_config_result = service_openai_chat_gpt.prompt_for_prompt_config(promt_config_input)
-        dao.save_prompt_config(chat_id, promt_config_result)
-        assistent_message_content = promt_config_result.list_message[-1]["content"]
+        prompt_config_input = dao.load_prompt_config(chat_id)
+        if prompt_config_input is None:
+            prompt_config_input = self.reset(chat_id)
+        prompt_config_input = prompt_config_input.append_user_message(message_text)
+        prompt_config_result = context.service_openai_chat_gpt.prompt_for_prompt_config(prompt_config_input)
+        dao.save_prompt_config(chat_id, prompt_config_result)
+        assistent_message_content = prompt_config_result.list_message[-1]["content"]
         self.service_chat.message_chat(chat_id, assistent_message_content)

@@ -25,8 +25,8 @@ class CommandBase(ABC):
 
         self.context.service_persistency.dao_message.save_message(message)
 
-        self.execute_command(update.message.chat_id, update.message.text)
+        self.execute_command(str(update.message.chat_id), update.message.text)
 
     @abstractmethod
-    def execute_command(self, chat_id: int, command_message: str) -> None:
+    def execute_command(self, chat_id: str, command_message: str) -> None:
         raise NotImplementedError()
