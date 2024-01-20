@@ -10,10 +10,10 @@ requires the following environment variables set \
 "TELEGRAM_TOKEN": "" \
 "OPENAI_API_KEY": "" \
 "MONGODB_CONNECTION_STRING": ""\
-"MONGODB_DATABASE_NAME": "" \
+"MONGODB_DATABASE_NAME": ""
 
 ## usage example
-'''
+```
 import os
 
 from srai_chat.skill.mode_chat_gpt import ModeChatGpt
@@ -54,6 +54,5 @@ if __name__ == "__main__":
     context_manager.service_chat.mode_default = context_manager.service_chat.dict_mode["ModeChatGpt"]
 
     # start services
-    context_manager.start()  # TODO there is a race condition here
-
-'''
+    context_manager.start()
+```
