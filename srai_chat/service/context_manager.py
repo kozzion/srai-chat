@@ -34,11 +34,13 @@ class ContextManager:
         from srai_chat.service.service_openai_chat_gpt import ServiceOpenaiChatGpt
         from srai_chat.service.service_persistency_mongo import ServicePersistencyMongo
         from srai_chat.service.service_sceduling import ServiceSceduling
+        from srai_chat.service.service_skill import ServiceSkill
 
         context.service_chat = ServiceChatTest(context)
         context.service_persistency = ServicePersistencyMongo(context, connection_string, database_name)
         context.service_openai_chat_gpt = ServiceOpenaiChatGpt(context, openai_api_key)
         context.service_sceduling = ServiceSceduling(context)
+        context.service_skill = ServiceSkill(context)
         return context
 
     def __init__(self):
@@ -46,8 +48,10 @@ class ContextManager:
         from srai_chat.service.service_openai_chat_gpt import ServiceOpenaiChatGpt
         from srai_chat.service.service_persistency_mongo import ServicePersistencyMongo
         from srai_chat.service.service_sceduling import ServiceSceduling
+        from srai_chat.service.service_skill import ServiceSkill
 
         self.service_chat: ServiceChatBase = None  # type: ignore
         self.service_persistency: ServicePersistencyMongo = None  # type: ignore
         self.service_openai_chat_gpt: ServiceOpenaiChatGpt = None  # type: ignore
         self.service_sceduling: ServiceSceduling = None  # type: ignore
+        self.service_skill: ServiceSkill = None  # type: ignore

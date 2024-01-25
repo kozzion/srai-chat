@@ -17,11 +17,14 @@ def initialize_default() -> "ContextManager":
     from srai_chat.service.service_openai_chat_gpt import ServiceOpenaiChatGpt
     from srai_chat.service.service_persistency_mongo import ServicePersistencyMongo
     from srai_chat.service.service_sceduling import ServiceSceduling
+    from srai_chat.service.service_skill import ServiceSkill
 
     context.service_chat = ServiceChatTelegram(context, telegram_token, telegram_root_id)
     context.service_persistency = ServicePersistencyMongo(context, connection_string, database_name)
     context.service_openai_chat_gpt = ServiceOpenaiChatGpt(context, openai_api_key)
     context.service_sceduling = ServiceSceduling(context)
+    context.service_skill = ServiceSkill(context)
+
     return context
 
 

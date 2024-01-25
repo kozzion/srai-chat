@@ -1,4 +1,5 @@
 from abc import abstractmethod
+from multiprocessing import context
 from typing import Dict
 
 from srai_chat.command_base import CommandBase
@@ -31,6 +32,7 @@ class ServiceChatBase(ServiceBase):
         self.dict_skill[skill.skill_name] = skill
         for command in skill.get_command_dict().values():
             self.register_command(command)
+        self.context.service_skill.register_skill(skill)
 
     def register_command(self, command: CommandBase):
         if command.command_name in self.dict_command:

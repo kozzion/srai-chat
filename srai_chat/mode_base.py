@@ -1,5 +1,7 @@
 from abc import ABC, abstractmethod
 
+from srai_chat.command_base import CommandBase
+
 
 class ModeBase(ABC):
     def __init__(
@@ -11,6 +13,11 @@ class ModeBase(ABC):
 
         self.service_chat = ContextManager.get_instance().service_chat
         self.command_dict = {}
+
+    def register_command(self, command: CommandBase):
+        if command.command_name in self.command_dict:
+            raise Exception(f"Command {command.command_name} already registered")
+        self.command_dict[command.command_name] = command
 
     @abstractmethod
     def reset(

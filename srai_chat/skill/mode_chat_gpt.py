@@ -1,10 +1,15 @@
 from srai_chat.dao.dao_prompt_config import PromptConfig
 from srai_chat.mode_base import ModeBase
+from srai_chat.skill.skill_image_tag import CommandImageTag
+from srai_chat.skill.skill_mode_tools import CommandModeHistory, CommandModeReset
 
 
 class ModeChatGpt(ModeBase):
     def __init__(self) -> None:
         super().__init__()
+        self.register_command(CommandImageTag())
+        self.register_command(CommandModeReset())
+        self.register_command(CommandModeHistory())
 
     def reset(
         self,
@@ -40,10 +45,23 @@ class ModeChatGpt(ModeBase):
         dao = service_persistency.dao_prompt_config
 
         prompt_config_input = dao.load_prompt_config(chat_id)
+
         if prompt_config_input is None:
             prompt_config_input = self.reset(chat_id)
+        else:
+            print("here0")
+            print(prompt_config_input.list_message)
+        print("here1")
+        print(prompt_config_input.list_message)
         prompt_config_input = prompt_config_input.append_user_message(message_text)
-        prompt_config_result = context.service_openai_chat_gpt.prompt_for_prompt_config(prompt_config_input)
+        print("here2")
+        print(prompt_config_input.list_message)
+        for command in self.command_dict.values():
+            prompt_config_input = prompt_config_input.add_tool(command)
+        print("here3")
+        print(prompt_config_input.list_message)
+        prompt_config_result = context.service_openai_chat_gpt.prompt_for_prompt_config(chat_id, prompt_config_input)
+
         dao.save_prompt_config(chat_id, prompt_config_result)
         assistent_message_content = prompt_config_result.list_message[-1]["content"]
         self.service_chat.message_chat(chat_id, assistent_message_content)
