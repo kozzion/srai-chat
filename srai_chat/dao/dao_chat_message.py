@@ -1,6 +1,7 @@
 from typing import List
 
-from srai_chat.dao.dao_mongo_base import DaoMongoBase
+from srai_chat.dao.dao_base import DaoBase
+from srai_chat.dao.store_document_base import StoreDocumentBase
 
 
 class ChatMessage:
@@ -30,15 +31,15 @@ class ChatMessage:
         return ChatMessage(message_id, chat_id, author_id, author_name, message_content)
 
 
-class DaoChatMessage(DaoMongoBase):
-    def __init__(self, connection_string: str, database_name: str) -> None:
-        super().__init__(connection_string, database_name, "chat_message")
+class DaoChatMessage(DaoBase):
+    def __init__(self, store_document: StoreDocumentBase) -> None:
+        super().__init__(store_document)
 
     def save_message(self, message: ChatMessage) -> None:
-        self.insert_one(message.to_dict())
+        self.store_document.insert_one(message.to_dict())
 
     def load_messages(self, query: dict) -> List[dict]:
-        return self.find(query)
+        return self.store_document.find(query)
 
     def load_messages_all(self) -> List[dict]:
-        return self.find({})  # type: ignore
+        return self.store_document.find({})  # type: ignore

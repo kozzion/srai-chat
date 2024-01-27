@@ -46,6 +46,10 @@ class Parameter:
         self.is_required = is_required
         self.list_enum = list_enum
 
+        from srai_chat.service.context_manager import ContextManager  # avoiding circular import
+
+        self.context: ContextManager = ContextManager.get_instance()
+
     def get_gpt_description(self) -> dict:
         gpt_description = {
             "type": self.parameter_type,

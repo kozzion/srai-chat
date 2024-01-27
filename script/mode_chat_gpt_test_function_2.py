@@ -11,6 +11,7 @@ def main():
 
     context.service_persistency.dao_prompt_config.delete_all()
     mode = ModeChatGpt()
+    context.service_chat.mode_default = mode
     mode.process_message("0", "please tell me what version of image tag the bot is running")
     mode.process_message("0", "What do you think about that?")
 

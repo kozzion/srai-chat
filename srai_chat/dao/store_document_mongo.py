@@ -3,8 +3,10 @@ from typing import List, Optional
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
 
+from srai_chat.dao.store_document_base import StoreDocumentBase
 
-class DaoMongoBase:
+
+class StoreDocumentMongo(StoreDocumentBase):
     def __init__(self, connection_string: str, database_name: str, collection_name: str):
         self.client = MongoClient(connection_string, server_api=ServerApi("1"))
         self.db = self.client.get_database(database_name)

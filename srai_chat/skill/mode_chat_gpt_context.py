@@ -1,15 +1,16 @@
 from srai_chat.dao.dao_prompt_config import PromptConfig
-from srai_chat.mode_base import ModeBase
+from srai_chat.mode_base import ChatContext, ModeBase
 from srai_chat.skill.skill_image_tag import CommandImageTag
 from srai_chat.skill.skill_mode_tools import CommandModeHistory, CommandModeReset
 
 
-class ModeChatGpt(ModeBase):
+class ModeChatGptContext(ModeBase):
     def __init__(self) -> None:
         super().__init__()
         self.register_command(CommandImageTag())
         self.register_command(CommandModeReset())
         self.register_command(CommandModeHistory())
+        self.register_context(ChatContext("base_context", "You are a helpfull assistent", ["image_tag"]))
 
     def reset(
         self,

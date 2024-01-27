@@ -3,19 +3,8 @@ from hashlib import sha256
 from typing import Dict, List, Optional
 
 from srai_chat.command_base import CommandBase
-from srai_chat.dao.dao_mongo_base import DaoMongoBase
-
-# class PromptConfig:
-#     def __init__(
-#         self,
-#         model: str,
-#         role: str,
-#         message_content: str,
-#         list_tool_call_result: List[dict] = [],
-#         list_tool: Optional[List[dict]] = None,
-#         tool_choice: Optional[str] = None,
-#         response_format: Optional[str] = None,
-#     ):
+from srai_chat.dao.dao_base import DaoBase
+from srai_chat.dao.store_document_base import StoreDocumentBase
 
 
 class PromptConfig:
@@ -134,9 +123,9 @@ class PromptConfig:
         return PromptConfig(model, list_message, list_list_tool_call_result, list_tool, tool_choice, response_format)
 
 
-class DaoPromptConfig(DaoMongoBase):
-    def __init__(self, connection_string: str, database_name: str) -> None:
-        super().__init__(connection_string, database_name, "prompt_config")
+class DaoPromptConfig(DaoBase):
+    def __init__(self, store_document: StoreDocumentBase) -> None:
+        super().__init__(store_document)
 
     def save_prompt_config_cached(self, prompt_config_input: PromptConfig, prompt_config_result: PromptConfig) -> None:
         id = sha256(json.dumps(prompt_config_input.to_dict()).encode("utf-8")).hexdigest()
@@ -145,7 +134,7 @@ class DaoPromptConfig(DaoMongoBase):
     def save_prompt_config(self, id: str, prompt_config_result: PromptConfig) -> None:
         prompt_config_result_dict = prompt_config_result.to_dict()
         prompt_config_result_dict["_id"] = id
-        self.update_one({"_id": id}, {"$set": prompt_config_result_dict}, upsert=True)
+        self.store_document.update_one({"_id": id}, {"$set": prompt_config_result_dict}, upsert=True)
 
     def load_prompt_config_cached(self, prompt_config_input: PromptConfig) -> Optional[PromptConfig]:
         id = sha256(json.dumps(prompt_config_input.to_dict()).encode("utf-8")).hexdigest()
@@ -153,7 +142,7 @@ class DaoPromptConfig(DaoMongoBase):
 
     def load_prompt_config(self, id: str) -> Optional[PromptConfig]:
         query = {"_id": id}
-        result = self.find(query)
+        result = self.store_document.find(query)
         # convert curser to list
         list_result = list(result)
         if len(list_result) == 0:

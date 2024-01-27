@@ -8,3 +8,5 @@ class ServicePersistencyTest(ServiceBase):
         # daos
         self.dao_message = None
         self.dao_prompt_config = None
+        self.dao_skill_state = None
+        self.dao_mode_state = None

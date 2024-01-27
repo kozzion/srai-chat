@@ -22,23 +22,9 @@ class SkillBase(ABC):
         self.db = self.client.get_database(database_name)
         self.collection = self.db.get_collection("skill_state")
 
-    def load_skill_state(self, chat_id) -> dict:
-        key = f"{self.skill_name}_{chat_id}"
-        key_hash = sha256(key.encode()).hexdigest()
-        result = self.collection.find_one({"_id": key_hash})
-        skill_state = {}
-        if result is None:
-            self.collection.insert_one({"_id": key_hash, "skill_state": skill_state})
-        return skill_state
+        from srai_chat.service.context_manager import ContextManager  # avoiding circular import
 
-    def save_skill_state(self, chat_id, skill_state) -> None:
-        key = f"{self.skill_name}_{chat_id}"
-        key_hash = sha256(key.encode()).hexdigest()
-        result = self.collection.find_one({"_id": key_hash})
-        if result is None:
-            self.collection.insert_one({"_id": key_hash, "skill_state": skill_state})
-        else:
-            self.collection.update_one({"_id": key_hash}, {"$set": {"skill_state": skill_state}})
+        self.context: ContextManager = ContextManager.get_instance()
 
     def add_command(self, command: CommandBase) -> None:
         self.command_dict[command.command_name] = command
